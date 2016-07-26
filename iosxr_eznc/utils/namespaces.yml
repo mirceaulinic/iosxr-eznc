@@ -1,0 +1,423 @@
+http://cisco.com/ns/yang/Cisco-IOS-XR-Ethernet-SPAN-cfg:
+- span-monitor-session
+http://cisco.com/ns/yang/Cisco-IOS-XR-Ethernet-SPAN-oper:
+- span-monitor-session
+http://cisco.com/ns/yang/Cisco-IOS-XR-aaa-lib-cfg:
+- aaa
+http://cisco.com/ns/yang/Cisco-IOS-XR-aaa-locald-admin-cfg:
+- aaa
+http://cisco.com/ns/yang/Cisco-IOS-XR-aaa-locald-oper:
+- aaa
+http://cisco.com/ns/yang/Cisco-IOS-XR-aaa-protocol-radius-oper:
+- radius
+http://cisco.com/ns/yang/Cisco-IOS-XR-alarmgr-server-oper:
+- alarms
+http://cisco.com/ns/yang/Cisco-IOS-XR-asic-errors-oper:
+- asic-errors
+http://cisco.com/ns/yang/Cisco-IOS-XR-asr9k-netflow-oper:
+- net-flow
+http://cisco.com/ns/yang/Cisco-IOS-XR-asr9k-policymgr-cfg:
+- policy-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-asr9k-qos-cfg:
+- qos
+http://cisco.com/ns/yang/Cisco-IOS-XR-asr9k-qos-oper:
+- platform-qos
+http://cisco.com/ns/yang/Cisco-IOS-XR-atm-vcm-oper:
+- atm-vcm
+http://cisco.com/ns/yang/Cisco-IOS-XR-bundlemgr-cfg:
+- lacp
+http://cisco.com/ns/yang/Cisco-IOS-XR-bundlemgr-oper:
+- lacp-bundles
+- bundle-information
+- lacp-data
+- bundles
+- lacp-bundle-members
+- bundles-adjacency
+http://cisco.com/ns/yang/Cisco-IOS-XR-cdp-cfg:
+- cdp
+http://cisco.com/ns/yang/Cisco-IOS-XR-cdp-oper:
+- cdp
+http://cisco.com/ns/yang/Cisco-IOS-XR-clns-isis-cfg:
+- isis
+http://cisco.com/ns/yang/Cisco-IOS-XR-clns-isis-oper:
+- isis
+http://cisco.com/ns/yang/Cisco-IOS-XR-cmproxy-oper:
+- sdr-inventory-vm
+http://cisco.com/ns/yang/Cisco-IOS-XR-config-mda-cfg:
+- apply-group
+- exclude-group
+- apply-group-remove
+- active-nodes
+- apply-group-append
+- groups
+- preconfigured-nodes
+http://cisco.com/ns/yang/Cisco-IOS-XR-controller-optics-oper:
+- optics-oper
+http://cisco.com/ns/yang/Cisco-IOS-XR-controller-otu-oper:
+- otu
+http://cisco.com/ns/yang/Cisco-IOS-XR-crypto-macsec-mka-cfg:
+- mac-sec
+http://cisco.com/ns/yang/Cisco-IOS-XR-crypto-macsec-mka-oper:
+- macsec
+http://cisco.com/ns/yang/Cisco-IOS-XR-crypto-sam-cfg:
+- crypto
+http://cisco.com/ns/yang/Cisco-IOS-XR-crypto-sam-oper:
+- sam
+http://cisco.com/ns/yang/Cisco-IOS-XR-crypto-ssh-oper:
+- ssh
+http://cisco.com/ns/yang/Cisco-IOS-XR-dnx-driver-oper:
+- fia
+http://cisco.com/ns/yang/Cisco-IOS-XR-dnx-netflow-oper:
+- net-flow
+http://cisco.com/ns/yang/Cisco-IOS-XR-drivers-media-eth-oper:
+- ethernet-interface
+http://cisco.com/ns/yang/Cisco-IOS-XR-es-acl-cfg:
+- es-acl
+http://cisco.com/ns/yang/Cisco-IOS-XR-es-acl-oper:
+- es-acl
+http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-cfm-oper:
+- cfm
+http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-link-oam-oper:
+- ether-link-oam
+http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-lldp-cfg:
+- lldp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ethernet-lldp-oper:
+- lldp
+http://cisco.com/ns/yang/Cisco-IOS-XR-fib-common-oper:
+- fib-statistics
+- fib
+- mpls-forwarding
+- fib-mpls
+http://cisco.com/ns/yang/Cisco-IOS-XR-fretta-bcm-dpa-oper:
+- dpa
+http://cisco.com/ns/yang/Cisco-IOS-XR-ha-eem-cfg:
+- event-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-ha-eem-oper:
+- system-monitoring
+http://cisco.com/ns/yang/Cisco-IOS-XR-ha-eem-policy-oper:
+- eem
+http://cisco.com/ns/yang/Cisco-IOS-XR-icpe-infra-cfg:
+- nv-satellites
+- nv-satellite-global
+http://cisco.com/ns/yang/Cisco-IOS-XR-icpe-infra-oper:
+- nv-satellite
+http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-cfg:
+- global-interface-configuration
+- interface-configurations
+http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-oper:
+- interface-dampening
+- interface-properties
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-alarm-logger-oper:
+- alarm-logger
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-dumper-cfg:
+- exception
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-infra-clock-cfg:
+- clock
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-infra-clock-linux-cfg:
+- clock
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-infra-locale-cfg:
+- locale
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-objmgr-cfg:
+- object-group
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-objmgr-oper:
+- object-group
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-policymgr-oper:
+- policy-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-rcmd-cfg:
+- router-convergence
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-rcmd-oper:
+- rcmd
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-rmf-oper:
+- redundancy
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-rsi-cfg:
+- vrfs
+- global-af
+- srlg
+- vrf-groups
+- selective-vrf-download
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-rsi-oper:
+- vrf-group
+- srlg
+- selective-vrf-download
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-sla-cfg:
+- sla
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-sla-oper:
+- sla
+- sla-nodes
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-statsd-cfg:
+- statistics
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-statsd-oper:
+- infra-statistics
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-syslog-cfg:
+- syslog-service
+- syslog
+http://cisco.com/ns/yang/Cisco-IOS-XR-infra-syslog-oper:
+- logging
+- syslog
+http://cisco.com/ns/yang/Cisco-IOS-XR-invmgr-oper:
+- inventory
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-bfd-cfg:
+- bfd
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-bfd-oper:
+- bfd
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-domain-cfg:
+- ip-domain
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-domain-oper:
+- ip-domain
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-icmp-cfg:
+- icmp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-iep-cfg:
+- ip-explicit-paths
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-iep-oper:
+- explicit-paths
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-mobileip-cfg:
+- mobile-ip
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-ntp-admin-oper:
+- ntp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-ntp-cfg:
+- ntp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-ntp-oper:
+- ntp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-pfilter-oper:
+- pfilter-ma
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rib-cfg:
+- rib
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rib-ipv4-oper:
+- rib-stdby
+- rib
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rib-ipv6-oper:
+- ipv6-rib
+- ipv6-rib-stdby
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rsvp-cfg:
+- rsvp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-rsvp-oper:
+- rsvp-standby
+- rsvp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-static-cfg:
+- router-static
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-tcp-cfg:
+- ip-tcp
+- ip
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-tcp-oper:
+- tcp-connection
+- tcp
+- tcp-nsr
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-udp-cfg:
+- ip-udp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ip-udp-oper:
+- udp
+- udp-connection
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-acl-cfg:
+- ipv4-acl-and-prefix-list
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-acl-oper:
+- ipv4-acl-and-prefix-list
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-arp-cfg:
+- arp
+- arpgmp
+- arp-redundancy
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-arp-oper:
+- arp-gmp
+- arp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-bgp-cfg:
+- bgp
+- bmp-servers
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-bgp-oper:
+- bgp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-hsrp-cfg:
+- hsrp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-hsrp-oper:
+- hsrp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-io-oper:
+- ipv4-network
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-ma-cfg:
+- ipv4-network-global
+- subscriber-pta
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-ospf-cfg:
+- ospf
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-ospf-oper:
+- ospf
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-telnet-cfg:
+- ipv6-telnet
+- ipv4-telnet
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-telnet-mgmt-cfg:
+- telnet
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-vrrp-cfg:
+- vrrp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-vrrp-oper:
+- vrrp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-acl-cfg:
+- ipv6-acl-and-prefix-list
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-acl-oper:
+- ipv6-acl-and-prefix-list
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-io-cfg:
+- ipv6-assembler
+- ipv6icmp
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-io-oper:
+- ipv6-io
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-ma-oper:
+- ipv6-network
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-nd-cfg:
+- ipv6-neighbor
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-nd-oper:
+- ipv6-node-discovery
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-new-dhcpv6d-cfg:
+- dhcpv6
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-new-dhcpv6d-oper:
+- dhcpv6
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-ospfv3-cfg:
+- ospfv3
+http://cisco.com/ns/yang/Cisco-IOS-XR-ipv6-ospfv3-oper:
+- ospfv3
+http://cisco.com/ns/yang/Cisco-IOS-XR-l2-eth-infra-cfg:
+- ethernet-features
+http://cisco.com/ns/yang/Cisco-IOS-XR-l2-eth-infra-oper:
+- mac-accounting
+- vlan
+- ethernet-encapsulation
+http://cisco.com/ns/yang/Cisco-IOS-XR-l2vpn-cfg:
+- l2vpn
+- generic-interface-lists
+- evpn
+http://cisco.com/ns/yang/Cisco-IOS-XR-l2vpn-oper:
+- l2vpn-forwarding
+- l2vpnv2
+- l2vpn
+- generic-interface-list-v2
+http://cisco.com/ns/yang/Cisco-IOS-XR-lib-keychain-cfg:
+- keychains
+http://cisco.com/ns/yang/Cisco-IOS-XR-lib-keychain-macsec-cfg:
+- mac-sec-keychains
+http://cisco.com/ns/yang/Cisco-IOS-XR-lib-keychain-oper:
+- keychain
+http://cisco.com/ns/yang/Cisco-IOS-XR-lib-mpp-cfg:
+- control-plane
+http://cisco.com/ns/yang/Cisco-IOS-XR-lib-mpp-oper:
+- management-plane-protection
+http://cisco.com/ns/yang/Cisco-IOS-XR-linux-os-reboot-history-oper:
+- reboot-history
+http://cisco.com/ns/yang/Cisco-IOS-XR-lpts-lib-cfg:
+- lpts
+http://cisco.com/ns/yang/Cisco-IOS-XR-lpts-pre-ifib-oper:
+- lpts-pifib
+http://cisco.com/ns/yang/Cisco-IOS-XR-man-ems-cfg:
+- grpc
+http://cisco.com/ns/yang/Cisco-IOS-XR-man-ems-oper:
+- grpc
+http://cisco.com/ns/yang/Cisco-IOS-XR-man-netconf-cfg:
+- netconf-yang
+http://cisco.com/ns/yang/Cisco-IOS-XR-man-xml-ttyagent-cfg:
+- xr-xml
+- netconf
+http://cisco.com/ns/yang/Cisco-IOS-XR-man-xml-ttyagent-oper:
+- netconf
+- xr-xml
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-ldp-cfg:
+- mpls-ldp
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-ldp-oper:
+- mpls-ldp
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-lsd-cfg:
+- mpls-lsd
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-lsd-oper:
+- mpls-lsd-nodes
+- mpls-lsd
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-oam-cfg:
+- mpls-oam
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-static-cfg:
+- mpls-static
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-static-oper:
+- mpls-static
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-te-cfg:
+- mpls-te
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-te-oper:
+- mpls-te
+- mpls-lcac-standby
+- mpls-lcac
+- mpls-pce
+- mpls-pce-stdby
+- mpls-tp
+- mpls-te-standby
+http://cisco.com/ns/yang/Cisco-IOS-XR-mpls-vpn-oper:
+- l3vpn
+http://cisco.com/ns/yang/Cisco-IOS-XR-ncs5500-policymgr-cfg:
+- policy-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-ncs5500-qos-oper:
+- platform-qos
+http://cisco.com/ns/yang/Cisco-IOS-XR-nto-misc-oper:
+- memory-summary
+http://cisco.com/ns/yang/Cisco-IOS-XR-nto-misc-shprocmem-oper:
+- processes-memory
+http://cisco.com/ns/yang/Cisco-IOS-XR-parser-cfg:
+- parser
+http://cisco.com/ns/yang/Cisco-IOS-XR-pbr-oper:
+- pbr
+http://cisco.com/ns/yang/Cisco-IOS-XR-pfi-im-cmd-oper:
+- interfaces
+http://cisco.com/ns/yang/Cisco-IOS-XR-plat-chas-invmgr-oper:
+- platform
+- platform-inventory
+http://cisco.com/ns/yang/Cisco-IOS-XR-pmengine-oper:
+- performance-management
+- performance-management-history
+http://cisco.com/ns/yang/Cisco-IOS-XR-policy-repository-cfg:
+- routing-policy
+http://cisco.com/ns/yang/Cisco-IOS-XR-policy-repository-oper:
+- routing-policy
+http://cisco.com/ns/yang/Cisco-IOS-XR-prm-server-oper:
+- prm
+http://cisco.com/ns/yang/Cisco-IOS-XR-procmem-oper:
+- processes-memory
+http://cisco.com/ns/yang/Cisco-IOS-XR-qos-ma-oper:
+- qos
+http://cisco.com/ns/yang/Cisco-IOS-XR-rgmgr-cfg:
+- redundancy-group-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-rgmgr-oper:
+- redundancy-group-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-sdr-invmgr-diag-oper:
+- diag
+http://cisco.com/ns/yang/Cisco-IOS-XR-sdr-invmgr-oper:
+- sdr-inventory
+http://cisco.com/ns/yang/Cisco-IOS-XR-segment-routing-ms-cfg:
+- sr
+http://cisco.com/ns/yang/Cisco-IOS-XR-segment-routing-ms-oper:
+- srms
+http://cisco.com/ns/yang/Cisco-IOS-XR-shellutil-filesystem-oper:
+- file-system
+http://cisco.com/ns/yang/Cisco-IOS-XR-shellutil-oper:
+- system-time
+http://cisco.com/ns/yang/Cisco-IOS-XR-show-fpd-loc-ng-oper:
+- show-fpd
+http://cisco.com/ns/yang/Cisco-IOS-XR-skp-policymgr-cfg:
+- policy-manager
+http://cisco.com/ns/yang/Cisco-IOS-XR-skp-qos-oper:
+- platform-qos
+- platform-qos-ea
+http://cisco.com/ns/yang/Cisco-IOS-XR-snmp-agent-cfg:
+- snmp
+- mib
+http://cisco.com/ns/yang/Cisco-IOS-XR-snmp-agent-oper:
+- snmp
+http://cisco.com/ns/yang/Cisco-IOS-XR-spirit-corehelper-cfg:
+- exception
+http://cisco.com/ns/yang/Cisco-IOS-XR-spirit-install-instmgr-oper:
+- software-install
+http://cisco.com/ns/yang/Cisco-IOS-XR-subscriber-infra-tmplmgr-cfg:
+- dynamic-template
+http://cisco.com/ns/yang/Cisco-IOS-XR-traffmon-netflow-cfg:
+- net-flow
+http://cisco.com/ns/yang/Cisco-IOS-XR-tty-management-cmd-oper:
+- show-users
+http://cisco.com/ns/yang/Cisco-IOS-XR-tty-server-cfg:
+- tty
+http://cisco.com/ns/yang/Cisco-IOS-XR-tty-server-oper:
+- tty
+http://cisco.com/ns/yang/Cisco-IOS-XR-tty-vty-cfg:
+- vty
+http://cisco.com/ns/yang/Cisco-IOS-XR-wanphy-ui-oper:
+- wanphy
+http://cisco.com/ns/yang/Cisco-IOS-XR-watchd-cfg:
+- watchdog
+- watchd
+http://cisco.com/ns/yang/Cisco-IOS-XR-wd-cfg:
+- watchdog
+http://cisco.com/ns/yang/Cisco-IOS-XR-wdsysmon-fd-oper:
+- system-monitoring

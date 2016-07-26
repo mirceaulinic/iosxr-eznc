@@ -32,6 +32,7 @@ from ncclient.operations import RPCError
 # import local modules
 import iosxr_eznc.exception
 from iosxr_eznc.rpc import Operational, Configuration
+from iosxr_eznc.namespaces import Namespaces
 
 
 class Device(object):
@@ -58,6 +59,7 @@ class Device(object):
 
         self._hostname = hostname
         self._port = kvargs.get('port', 830)
+        self._preload_schemas = kvargs.get('preload_schemas', True)
 
         if hostname == 'localhost':
             # if the user specifies the host as 'localhost'
@@ -113,6 +115,7 @@ class Device(object):
 
         # looking good
         self.connected = True
+        self._namespaces = Namespaces(self)
         self.op = Operational(self)
         self.config = Configuration(self)
 
@@ -160,3 +163,11 @@ class Device(object):
     @timeout.setter
     def timeout(self, val):
         self._timeout = val
+
+    @property
+    def namespaces(self):
+        return self._namespaces
+
+    @namespaces.setter
+    def namespaces(self, vals):
+        self._namespaces.register(vals)

@@ -47,7 +47,8 @@ class ConnectError(Exception):
 
 class RPCError(Exception):
 
-    def __init__(self, err):
+    def __init__(self, dev, err):
+        self._dev = dev
         self._err = err
 
     def __repr__(self):
@@ -59,6 +60,9 @@ class RPCError(Exception):
                         value=value
                     )
                 )
-        return ', '.join(_err_parts)
+        return '{dev}({errors})'.format(
+            dev=self._dev.hostname,
+            errors=', '.join(_err_parts)
+        )
 
     __str__ = __repr__

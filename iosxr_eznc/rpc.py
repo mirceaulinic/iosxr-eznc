@@ -21,7 +21,7 @@ from __future__ import absolute_import
 
 
 # import local modules
-from iosxr_eznc.decorators import raise_eznc_exception
+from iosxr_eznc.decorators import qualify, raise_eznc_exception
 
 
 class Operational(object):
@@ -33,6 +33,7 @@ class Operational(object):
     def __init__(self, dev):
         self._dev = dev
 
+    @qualify('xml_rpc_command')
     @raise_eznc_exception
     def execute(self, xml_rpc_command):
         return self._dev._conn.rpc(xml_rpc_command)
@@ -43,10 +44,12 @@ class Operational(object):
                                           version=version,
                                           format=format)
 
+    @qualify('filter_xml')
     @raise_eznc_exception
     def get(self, filter_xml=None):
         return self._dev._conn.get(filter=filter_xml)
 
+    @qualify('filter_xml')
     @raise_eznc_exception
     def get_configuration(self, source=None, filter_xml=None):
         return self._dev._conn.get_config(source=source,
@@ -89,4 +92,3 @@ class Configuration(object):
     @raise_eznc_exception
     def copy_config(self, source, target):
         return self._dev._conn.copy_config(source, target)
-

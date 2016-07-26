@@ -24,6 +24,7 @@ from __future__ import absolute_import
 from functools import wraps
 
 # import third party
+from lxml import etree
 from ncclient.operations.rpc import RPCError as NCRPCError
 
 # import local modules
@@ -35,8 +36,32 @@ def raise_eznc_exception(fun):
     @wraps(fun)
     def _raise_eznc_exception(*vargs, **kvargs):
         try:
-            return function(*vargs, **kvargs)
+            return fun(*vargs, **kvargs)
         except NCRPCError as nc_err:
-            raise XRRPCError(nc_err)
+            raise XRRPCError(vargs[0], nc_err)
 
     return _raise_eznc_exception
+
+
+def qualify(param):
+
+    def _qualify_wrapper(fun):
+
+        @wraps(fun)
+        def _qualify(*vargs, **kvargs):
+            if param in kvargs.keys():
+                xml_req_raw = kvargs[param]
+                xml_req_tree = etree.tostring(xml_req_raw)
+                if xml_req_tree.get('xmlns') is None:
+                    _dev = vargs[0]
+                    namespace = _dev._namespaces.get(xml_req_tree.tag)
+                    if not namespace is None:
+                        # cannot register with namespace
+                        # probably the request will fail...
+                        xml_req_tree.set('xmlns', namespace)
+                        kvargs[param] = xml_req_tree
+            return fun(*vargs, **kvargs)
+
+        return _qualify
+
+    return _qualify_wrapper

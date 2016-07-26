@@ -36,6 +36,7 @@ setup(
     download_url = 'https://github.com/mirceaulinic/iosxr-eznc/tarball/%s' % __version__,
     keywords = ['network', 'automation', 'NETCONF', 'IOS-XR', 'IOSXR', 'Cisco'],
     license = 'Apache 2.0',
+    scripts = ['utils/iosxr_yang_namespaces'],
     classifiers = [
         'Development Status :: 1 - Planning',
         'Environment :: Console',
