@@ -53,7 +53,7 @@ class Operational(_RPC):
         _RPC.__init__(self, dev)
 
     @qualify('filter_xml', True)
-    @raise_eznc_exception('RPCError', 'Sugi pula!')
+    @raise_eznc_exception('RPCError')
     def _execute(self, filter_xml=None):
 
         # filter_xml is qualified after applying the decorator
