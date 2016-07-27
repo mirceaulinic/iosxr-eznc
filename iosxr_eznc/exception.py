@@ -53,18 +53,87 @@ class RPCError(Exception):
 
     def __repr__(self):
         _err_parts = []
-        for detail, value in six.iteritems(self._err.args[0]):
-            if detail == 'info':
-                continue
-            if value:
-                _err_parts.append('{detail}: {value}'.format(
-                        detail=detail,
-                        value=value
+        if self._err:
+            for detail, value in six.iteritems(self._err.args[0]):
+                if detail == 'info':
+                    continue
+                if value:
+                    _err_parts.append('{detail}: {value}'.format(
+                            detail=detail,
+                            value=value
+                        )
                     )
-                )
+
         return '{dev} ({errors})'.format(
             dev=self._dev.hostname,
             errors=', '.join(_err_parts)
         )
 
     __str__ = __repr__
+
+
+class ConnectAuthError(ConnectError):
+
+    pass
+
+
+class ConnectUnknownHostError(ConnectError):
+
+    pass
+
+
+class ConnectionClosedError(ConnectError):
+
+    def __init__(self, dev):
+        ConnectError.__init__(self, dev=dev, msg='Connection closed.')
+        dev.connected = False
+
+
+class TimeoutExpiredError(RPCError):
+
+    pass
+
+
+class LockError(RPCError):
+
+    pass
+
+
+class UnlockError(RPCError):
+
+    pass
+
+
+class RPCTimeoutError(RPCError):
+
+    pass
+
+
+class CommitError(RPCError):
+
+    pass
+
+
+class DiscardChangesError(RPCError):
+
+    pass
+
+
+class DeleteConfigError(RPCError):
+
+    pass
+
+
+class ValidateError(RPCError):
+
+    pass
+
+
+class CopyConfigError(RPCError):
+
+    pass
+
+
+class RollbackError(RPCError):
+
+    pass
