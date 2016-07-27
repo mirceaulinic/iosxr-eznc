@@ -30,13 +30,13 @@ class ConnectError(Exception):
     def __repr__(self):
         if self._dev:
             if self._msg:
-                return '{cls}(host: {host}, message: {msg})'.format(
+                return '{cls} (host: {host}, message: {msg})'.format(
                     self.__class__.__name__,
                     host=self._dev.hostname,
                     msg=self._msg
                 )
             else:
-                return '{cls}(host: {host})'.format(
+                return '{cls} (host: {host})'.format(
                     self.__class__.__name__,
                     host=self._dev.hostname
                 )
@@ -54,13 +54,15 @@ class RPCError(Exception):
     def __repr__(self):
         _err_parts = []
         for detail, value in six.iteritems(self._err.args[0]):
+            if detail == 'info':
+                continue
             if value:
-                _err_parts.append('{detail}:{value}'.format(
+                _err_parts.append('{detail}: {value}'.format(
                         detail=detail,
                         value=value
                     )
                 )
-        return '{dev}({errors})'.format(
+        return '{dev} ({errors})'.format(
             dev=self._dev.hostname,
             errors=', '.join(_err_parts)
         )

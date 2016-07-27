@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2016 CloudFlare, Inc. All rights reserved.
 #
 # The contents of this file are licensed under the Apache License, Version 2.0
@@ -20,7 +21,7 @@ install_reqs = parse_requirements('requirements.txt', session=uuid.uuid1())
 
 reqs = [str(ir.req) for ir in install_reqs]
 
-__version__ = '2016.7.22'
+__version__ = '2016.7.27dev'
 
 setup(
     name = 'iosxr-eznc',
@@ -36,9 +37,9 @@ setup(
     download_url = 'https://github.com/mirceaulinic/iosxr-eznc/tarball/%s' % __version__,
     keywords = ['network', 'automation', 'NETCONF', 'IOS-XR', 'IOSXR', 'Cisco'],
     license = 'Apache 2.0',
-    scripts = ['utils/iosxr_yang_namespaces'],
+    scripts = ['iosxr_eznc/utils/iosxr_yang_namespaces'],
     classifiers = [
-        'Development Status :: 1 - Planning',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',

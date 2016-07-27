@@ -1,1 +1,1 @@
-VERSION = "2016.7.25dev"
+VERSION = "2016.7.27dev"

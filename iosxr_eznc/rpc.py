@@ -19,6 +19,8 @@ NETCONF RPC classes.
 
 from __future__ import absolute_import
 
+# import third party modules
+from lxml import etree
 
 # import local modules
 from iosxr_eznc.decorators import qualify, raise_eznc_exception
@@ -33,10 +35,25 @@ class Operational(object):
     def __init__(self, dev):
         self._dev = dev
 
-    @qualify('xml_rpc_command')
     @raise_eznc_exception
-    def execute(self, xml_rpc_command):
+    def rpc(self, xml_rpc_command):
         return self._dev._conn.rpc(xml_rpc_command)
+
+    @qualify('filter_xml', True)
+    @raise_eznc_exception
+    def _execute(self, filter_xml=None):
+
+        # filter_xml is qualified after applying the decorator
+        xml_rpc_command = etree.Element('get')
+        filter_ele = etree.SubElement(xml_rpc_command, 'filter')
+        if isinstance(filter_xml, basestring):
+            filter_xml = etree.fromstring(filter_xml)
+        filter_ele.append(filter_xml)
+
+        return self.rpc(xml_rpc_command)
+
+    def execute(self, filter_xml):
+        return self._execute(filter_xml=filter_xml)
 
     @raise_eznc_exception
     def get_schema(self, identifier, version=None, format=None):
@@ -44,25 +61,25 @@ class Operational(object):
                                           version=version,
                                           format=format)
 
-    @qualify('filter_xml')
-    @raise_eznc_exception
-    def get(self, filter_xml=None):
-        return self._dev._conn.get(filter=filter_xml)
-
-    @qualify('filter_xml')
+    @qualify('filter_xml', False)
     @raise_eznc_exception
     def get_configuration(self, source=None, filter_xml=None):
         return self._dev._conn.get_config(source=source,
                                           filter=filter_xml)
 
     def __call__(self, xml_rpc_command):
-        return self.execute(xml_rpc_command)
+        return self.rpc(xml_rpc_command)
 
 
 class Configuration(object):
 
     def __init__(self, dev):
         self._dev = dev
+
+    @qualify('filter_xml', False)
+    @raise_eznc_exception
+    def get(self, filter_xml=None):
+        return self._dev._conn.get(filter=filter_xml)
 
     @raise_eznc_exception
     def lock(self, target='candidate'):

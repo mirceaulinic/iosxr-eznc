@@ -59,7 +59,7 @@ class Device(object):
 
         self._hostname = hostname
         self._port = kvargs.get('port', 830)
-        self._preload_schemas = kvargs.get('preload_schemas', True)
+        self._preload_schemas = kvargs.get('preload_schemas', False)
 
         if hostname == 'localhost':
             # if the user specifies the host as 'localhost'
@@ -115,9 +115,9 @@ class Device(object):
 
         # looking good
         self.connected = True
-        self._namespaces = Namespaces(self)
         self.op = Operational(self)
         self.config = Configuration(self)
+        self._namespaces = Namespaces(self)
 
     def close(self):
 
