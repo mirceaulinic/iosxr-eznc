@@ -21,27 +21,52 @@ Useful decorators.
 from __future__ import absolute_import
 
 # import stdlib
+import inspect
 from functools import wraps
 
 # import third party
 from lxml import etree
-from ncclient.operations.rpc import RPCError as NCRPCError
+from ncclient.transport.errors import TransportError as NcTpError
+from ncclient.operations.errors import TimeoutExpiredError as NcTEError
+from ncclient.operations.rpc import RPCError as NcRPCError
 
 # import local modules
-from iosxr_eznc.exception import RPCError as XRRPCError
+from iosxr_eznc.exception import RPCError as _XRRPCError
+from iosxr_eznc.exception import ConnectionClosedError
+from iosxr_eznc.exception import RPCTimeoutError
 
 
-def raise_eznc_exception(fun):
+def raise_eznc_exception(exc, msg=None):
 
-    @wraps(fun)
-    def _raise_eznc_exception(*vargs, **kvargs):
-        try:
-            return fun(*vargs, **kvargs)
-        except NCRPCError as nc_err:
-            print nc_err
-            raise XRRPCError(vargs[0]._dev, nc_err)
+    def _get_rpc_error_class(exc):
 
-    return _raise_eznc_exception
+        mod = __import__('iosxr_eznc.exception')
+        for obj in inspect.getmembers(mod.exception):
+            if obj[0] == exc and inspect.isclass(obj):
+                return obj
+
+    def _raise_eznc_exception_wrapper(fun):
+
+        @wraps(fun)
+        def _raise_eznc_exception(*vargs, **kvargs):
+            try:
+                return fun(*vargs, **kvargs)
+            except NcRPCError as nc_err:
+                XRRPCError = _get_rpc_error_class(exc)
+                if not XRRPCError:
+                    XRRPCError = _XRRPCError
+                if msg:
+                    nc_err.args[0]['msg'] = msg
+                raise XRRPCError(vargs[0]._dev, nc_err.args[0])
+            except NcTpError as nc_err:
+                nc_err.args[0]['timeout'] = vargs[0]._dev.timeout
+                raise RPCTimeoutError(vargs[0]._dev, nc_err.args[0])
+            except NcTEError as nc_err:
+                raise ConnectionClosedError(vargs[0]._dev)
+
+        return _raise_eznc_exception
+
+    return _raise_eznc_exception_wrapper
 
 
 def qualify(param, oper=None):

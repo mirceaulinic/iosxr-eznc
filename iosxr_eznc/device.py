@@ -25,14 +25,14 @@ import socket
 
 # import third party libs
 from ncclient import manager as netconf_ssh
-import ncclient.transport.errors as NcErrors
-import ncclient.operations.errors as NcOpErrors
+from ncclient.transport.errors import AuthenticationError as NcAuthErr
 from ncclient.operations import RPCError
 
 # import local modules
 import iosxr_eznc.exception
 from iosxr_eznc.rpc import Operational, Configuration
 from iosxr_eznc.namespaces import Namespaces
+from iosxr_eznc.decorators import raise_eznc_exception
 
 
 class Device(object):
@@ -106,9 +106,9 @@ class Device(object):
                                              allow_agent=allow_agent,
                                              ssh_config=self._ssh_config,
                                              device_params={'name': 'iosxr'})
-        except NcErrors.AuthenticationError as err:
-            raise iosxr_eznc.exception.ConnectError(dev=self)
-        except socket.gaierror:
+        except NcAuthErr as auth_err:
+            raise iosxr_eznc.exception.ConnectAuthError(dev=self)
+        except socket.gaierror as host_err:
             raise iosxr_eznc.exception.ConnectError(dev=self, msg='Unknown host.')
         except Exception as err:
             raise iosxr_eznc.exception.ConnectError(dev=self, msg=err.message)  # original error
@@ -119,6 +119,7 @@ class Device(object):
         self.config = Configuration(self)
         self._namespaces = Namespaces(self)
 
+    @raise_eznc_exception('ConnectionClosedError')
     def close(self):
 
         self._conn.close_session()
