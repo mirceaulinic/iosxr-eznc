@@ -36,37 +36,42 @@ from iosxr_eznc.exception import ConnectionClosedError
 from iosxr_eznc.exception import RPCTimeoutError
 
 
-def raise_eznc_exception(exc, msg=None):
+
+def raise_eznc_exception(fun):
 
     def _get_rpc_error_class(exc):
 
         mod = __import__('iosxr_eznc.exception')
         for obj in inspect.getmembers(mod.exception):
+            # digging into exceptions' module
             if obj[0] == exc and inspect.isclass(obj):
+                # found ya
                 return obj
 
-    def _raise_eznc_exception_wrapper(fun):
+    @wraps(fun)
+    def _raise_eznc_exception(*vargs, **kvargs):
+        ### ~~~ vargs[0] is dev obj ~~~
+        try:
+            return fun(*vargs, **kvargs)
+        except NcRPCError as nc_err:
+            exc = '{}Error'.format(fun.__name__.title().replace('_', ''))
+            XRRPCError = _get_rpc_error_class(exc)
+            if not XRRPCError:
+                # could not find the desired exception, throw the base
+                XRRPCError = _XRRPCError
+            if msg:
+                nc_err.args[0]['msg'] = msg
+            raise XRRPCError(vargs[0], nc_err.args[0])
+        except NcTEError as nc_err:
+            err = {
+                'fun': fun.__name__,
+                'timeout': vargs[0].timeout
+            }
+            raise RPCTimeoutError(vargs[0], err)
+        except NcTpError as nc_err:
+            raise ConnectionClosedError(vargs[0])
 
-        @wraps(fun)
-        def _raise_eznc_exception(*vargs, **kvargs):
-            try:
-                return fun(*vargs, **kvargs)
-            except NcRPCError as nc_err:
-                XRRPCError = _get_rpc_error_class(exc)
-                if not XRRPCError:
-                    XRRPCError = _XRRPCError
-                if msg:
-                    nc_err.args[0]['msg'] = msg
-                raise XRRPCError(vargs[0]._dev, nc_err.args[0])
-            except NcTpError as nc_err:
-                nc_err.args[0]['timeout'] = vargs[0]._dev.timeout
-                raise RPCTimeoutError(vargs[0]._dev, nc_err.args[0])
-            except NcTEError as nc_err:
-                raise ConnectionClosedError(vargs[0]._dev)
-
-        return _raise_eznc_exception
-
-    return _raise_eznc_exception_wrapper
+    return _raise_eznc_exception
 
 
 def qualify(param, oper=None):

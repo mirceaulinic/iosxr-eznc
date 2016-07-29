@@ -35,7 +35,7 @@ class _RPC(object):
     def __init__(self, dev):
         self._dev = dev
 
-    @raise_eznc_exception('RPCError')
+    @raise_eznc_exception
     def rpc(self, xml_rpc_command):
         return self._dev._conn.rpc(xml_rpc_command)
 
@@ -52,8 +52,6 @@ class Operational(_RPC):
     def __init__(self, dev):
         _RPC.__init__(self, dev)
 
-    @qualify('filter_xml', True)
-    @raise_eznc_exception('RPCError')
     def _execute(self, filter_xml=None):
 
         # filter_xml is qualified after applying the decorator
@@ -65,17 +63,19 @@ class Operational(_RPC):
 
         return self.rpc(xml_rpc_command)
 
+    @raise_eznc_exception
+    @qualify('filter_xml', True)
     def execute(self, filter_xml):
         return self._execute(filter_xml=filter_xml)
 
-    @raise_eznc_exception('RPCError')
+    @raise_eznc_exception
     def get_schema(self, identifier, version=None, format=None):
         return self._dev._conn.get_schema(identifier,
                                           version=version,
                                           format=format)
 
-    @qualify('filter_xml', False)
     @raise_eznc_exception
+    @qualify('filter_xml', False)
     def get_configuration(self, source=None, filter_xml=None):
         return self._dev._conn.get_config(source=source,
                                           filter=filter_xml)
@@ -90,36 +90,36 @@ class Configuration(_RPC):
     def __init__(self, dev):
         _RPC.__init__(self, dev)
 
+    @raise_eznc_exception
     @qualify('filter_xml', False)
-    @raise_eznc_exception('RPCError')
     def get(self, filter_xml=None):
         return self._dev._conn.get(filter=filter_xml)
 
-    @raise_eznc_exception('LockError')
+    @raise_eznc_exception
     def lock(self, target='candidate'):
         return self._dev._conn.lock(target=target)
 
-    @raise_eznc_exception('UnlockError')
+    @raise_eznc_exception
     def unlock(self, target='candidate'):
         return self._dev._conn.unlock(target=target)
 
-    @raise_eznc_exception('CommitError')
+    @raise_eznc_exception
     def commit(self, confirmed=None, timeout=None):
         return self._dev._conn.commit(confirmed=confirmed,
                                       timeout=timeout)
 
-    @raise_eznc_exception('DiscardChangesError')
+    @raise_eznc_exception
     def discard_changes(self):
         return self._dev._conn.discard_changes()
 
-    @raise_eznc_exception('ValidateError')
+    @raise_eznc_exception
     def validate(self, source='candidate'):
         return self._dev._conn.validate(source=source)
 
-    @raise_eznc_exception('DeleteConfigError')
+    @raise_eznc_exception
     def delete_config(self, target):
         return self._dev._conn.delete_config(target)
 
-    @raise_eznc_exception('CopyConfigError')
+    @raise_eznc_exception
     def copy_config(self, source, target):
         return self._dev._conn.copy_config(source, target)

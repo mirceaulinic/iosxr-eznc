@@ -119,7 +119,8 @@ class Device(object):
         self.config = Configuration(self)
         self._namespaces = Namespaces(self)
 
-    @raise_eznc_exception('ConnectionClosedError')
+        return self
+
     def close(self):
 
         self._conn.close_session()
