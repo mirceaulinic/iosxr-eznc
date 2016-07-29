@@ -94,6 +94,26 @@ class TimeoutExpiredError(RPCError):
     pass
 
 
+class ExecuteError(RPCError):
+
+    pass
+
+
+class GetSchemaError(RPCError):
+
+    pass
+
+
+class GetError(RPCError):
+
+    pass
+
+
+class GetConfigurationError(RPCError):
+
+    pass
+
+
 class LockError(RPCError):
 
     pass
