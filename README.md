@@ -7,7 +7,7 @@ iosxr-eznc is a Python library to manage Cisco devices running IOS-XR using NETC
 
 ## INSTALLATION
 
-YANG models are supported exclusively through NETCONF 1.1, therefore at least version 0.5.2 of ncclient is required.
+YANG models are supported exclusively through version 1.1 of NETCONF, therefore at least version 0.5.2 of ncclient is required.
 
 #### Requirements:
 
@@ -16,7 +16,7 @@ YANG models are supported exclusively through NETCONF 1.1, therefore at least ve
 * pyang
 
 
-### Install via `pip`:
+### Install via pip:
 
 ````bash
 pip install ncclient
