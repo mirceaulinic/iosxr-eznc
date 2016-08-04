@@ -54,7 +54,7 @@ class RPCError(Exception):
     def __repr__(self):
         _err_parts = []
         if self._err:
-            for detail, value in six.iteritems(self._err.args[0]):
+            for detail, value in six.iteritems(self._err):
                 if detail == 'info':
                     continue
                 if value:
@@ -120,6 +120,11 @@ class LockError(RPCError):
 
 
 class UnlockError(RPCError):
+
+    pass
+
+
+class EditConfigError(RPCError):
 
     pass
 

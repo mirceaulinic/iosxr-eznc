@@ -30,7 +30,7 @@ from ncclient.operations import RPCError
 
 # import local modules
 import iosxr_eznc.exception
-from iosxr_eznc.rpc import Operational, Configuration
+from iosxr_eznc.rpc import RPC
 from iosxr_eznc.namespaces import Namespaces
 from iosxr_eznc.decorators import raise_eznc_exception
 
@@ -115,8 +115,7 @@ class Device(object):
 
         # looking good
         self.connected = True
-        self.op = Operational(self)
-        self.config = Configuration(self)
+        self.rpc = RPC(self)
         self._namespaces = Namespaces(self)
 
         return self
