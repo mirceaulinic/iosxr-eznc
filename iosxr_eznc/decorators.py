@@ -36,7 +36,6 @@ from iosxr_eznc.exception import ConnectionClosedError
 from iosxr_eznc.exception import RPCTimeoutError
 
 
-
 def raise_eznc_exception(fun):
 
     def _get_rpc_error_class(exc):
@@ -50,7 +49,9 @@ def raise_eznc_exception(fun):
 
     @wraps(fun)
     def _raise_eznc_exception(*vargs, **kvargs):
-        ### ~~~ vargs[0] is dev obj ~~~
+        ### ~~~ vargs[0] is rpc obj ~~~
+        _rpc_obj = vargs[0]
+        _dev_obj = _rpc_obj._dev
         try:
             return fun(*vargs, **kvargs)
         except NcRPCError as nc_err:
@@ -59,17 +60,21 @@ def raise_eznc_exception(fun):
             if not XRRPCError:
                 # could not find the desired exception, throw the base
                 XRRPCError = _XRRPCError
-            if msg:
-                nc_err.args[0]['msg'] = msg
-            raise XRRPCError(vargs[0], nc_err.args[0])
+            err = nc_err.args[0]
+            err.update({
+                'fun': 'rpc.{}'.format(fun.__name__),
+                'args': vargs[1:] if len(vargs) > 0 else [],
+                'kvargs': kvargs
+            })
+            raise XRRPCError(_dev_obj, err)
         except NcTEError as nc_err:
             err = {
                 'fun': fun.__name__,
-                'timeout': vargs[0].timeout
+                'timeout': _dev_obj.timeout
             }
-            raise RPCTimeoutError(vargs[0], err)
+            raise RPCTimeoutError(_dev_obj, err)
         except NcTpError as nc_err:
-            raise ConnectionClosedError(vargs[0])
+            raise ConnectionClosedError(_dev_obj)
 
     return _raise_eznc_exception
 
@@ -91,8 +96,31 @@ def qualify(param, oper=None):
                         # probably the request will fail...
                         xml_req_tree.set('xmlns', namespace)
                         kvargs[param] = xml_req_tree
+
             return fun(*vargs, **kvargs)
 
         return _qualify
 
     return _qualify_wrapper
+
+
+def wrap_xml(param, tag='filter'):
+
+    def _wrap_xml_wrapper(fun):
+
+        @wraps(fun)
+        def _wrap_xml(*vargs, **kvargs):
+            if param in kvargs.keys():
+                xml_req_tree = kvargs[param]
+                if isinstance(xml_req_tree, basestring):
+                    xml_req_tree = etree.fromstring(xml_req_tree)
+                if xml_req_tree.tag != tag:
+                    tag_elem = etree.Element(tag)
+                    tag_elem.append(xml_req_tree)
+                    kvargs[param] = tag_elem
+
+            return fun(*vargs, **kvargs)
+
+        return _wrap_xml
+
+    return _wrap_xml_wrapper

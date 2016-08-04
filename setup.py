@@ -21,7 +21,7 @@ install_reqs = parse_requirements('requirements.txt', session=uuid.uuid1())
 
 reqs = [str(ir.req) for ir in install_reqs]
 
-__version__ = '2016.7.27dev'
+__version__ = '2016.8.4'
 
 setup(
     name = 'iosxr-eznc',
@@ -39,7 +39,7 @@ setup(
     license = 'Apache 2.0',
     scripts = ['iosxr_eznc/utils/iosxr_yang_namespaces'],
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',

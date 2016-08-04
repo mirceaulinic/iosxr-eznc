@@ -179,7 +179,7 @@ class Namespaces(dict):
                 continue
             print 'retrieving schema', schema
             try:
-                schema_content_reply = self._dev.op.get_schema(schema, format='yang')
+                schema_content_reply = self._dev.rpc.get_schema(schema, format='yang')
             except RPCError:
                 continue
             raw_yang_module = schema_content_reply.xpath('data')[0].text
