@@ -19,7 +19,7 @@ YANG models are supported exclusively through version 1.1 of NETCONF, therefore 
 ### Install via pip:
 
 ````bash
-pip install ncclient
+pip install iosxr-eznc
 ````
 
 ## USGAE
