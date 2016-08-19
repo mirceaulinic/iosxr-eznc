@@ -21,19 +21,23 @@ Useful decorators.
 from __future__ import absolute_import
 
 # import stdlib
+import json
 import inspect
 from functools import wraps
 
 # import third party
+import jxmlease
 from lxml import etree
+from ncclient.operations.retrieve import GetReply
+from ncclient.operations.rpc import RPCError as NcRPCError
 from ncclient.transport.errors import TransportError as NcTpError
 from ncclient.operations.errors import TimeoutExpiredError as NcTEError
-from ncclient.operations.rpc import RPCError as NcRPCError
 
 # import local modules
-from iosxr_eznc.exception import RPCError as _XRRPCError
-from iosxr_eznc.exception import ConnectionClosedError
 from iosxr_eznc.exception import RPCTimeoutError
+from iosxr_eznc.exception import InvalidXMLReplyError
+from iosxr_eznc.exception import ConnectionClosedError
+from iosxr_eznc.exception import RPCError as _XRRPCError
 
 
 def raise_eznc_exception(fun):
@@ -61,6 +65,10 @@ def raise_eznc_exception(fun):
                 # could not find the desired exception, throw the base
                 XRRPCError = _XRRPCError
             err = nc_err.args[0]
+            if not isinstance(err, dict):
+                err = {
+                    'err': nc_err.args[0]
+                }
             err.update({
                 'fun': 'rpc.{}'.format(fun.__name__),
                 'args': vargs[1:] if len(vargs) > 0 else [],
@@ -124,3 +132,17 @@ def wrap_xml(param, tag='filter'):
         return _wrap_xml
 
     return _wrap_xml_wrapper
+
+
+def jsonify(fun):
+
+    def _jsonify(*vargs, **kvargs):
+        ret = fun(*vargs, **kvargs)
+        if isinstance(ret, GetReply):
+            ret_xml = ret.data_xml
+            ret_json = json.loads(json.dumps(jxmlease.parse(ret_xml)))
+            return ret_json
+        else:
+            raise InvalidXMLReplyError(err='Cannot process reply from device')
+
+    return _jsonify

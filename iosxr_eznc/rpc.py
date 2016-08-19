@@ -19,11 +19,8 @@ NETCONF RPC classes.
 
 from __future__ import absolute_import
 
-# import third party modules
-from lxml import etree
-
 # import local modules
-from iosxr_eznc.decorators import wrap_xml, qualify, raise_eznc_exception
+from iosxr_eznc.decorators import wrap_xml, qualify, raise_eznc_exception, jsonify
 
 
 class _RPCBase(object):
@@ -53,18 +50,21 @@ class RPC(_RPCBase):
     def __init__(self, dev):
         _RPCBase.__init__(self, dev)
 
+    @jsonify
     @raise_eznc_exception
     def get_schema(self, identifier, version=None, format=None):
         return self._dev._conn.get_schema(identifier,
                                           version=version,
                                           format=format)
 
+    @jsonify
     @raise_eznc_exception
     @qualify('filter_xml', True)
     @wrap_xml('filter_xml')
     def get(self, filter_xml=None):
         return self._dev._conn.get(filter=filter_xml)
 
+    @jsonify
     @raise_eznc_exception
     @qualify('filter_xml', False)
     @wrap_xml('filter_xml')
@@ -73,14 +73,17 @@ class RPC(_RPCBase):
             source = 'running'
         return self._dev._conn.get_config(filter=filter_xml, source=source)
 
+    @jsonify
     @raise_eznc_exception
     def lock(self, target='candidate'):
         return self._dev._conn.lock(target=target)
 
+    @jsonify
     @raise_eznc_exception
     def unlock(self, target='candidate'):
         return self._dev._conn.unlock(target=target)
 
+    @jsonify
     @raise_eznc_exception
     def edit_config(self,
                     config,
@@ -103,23 +106,28 @@ class RPC(_RPCBase):
                                            test_option=test_option,
                                            error_option=error_action)
 
+    @jsonify
     @raise_eznc_exception
     def commit(self, confirmed=None, timeout=None):
         return self._dev._conn.commit(confirmed=confirmed,
                                       timeout=timeout)
 
+    @jsonify
     @raise_eznc_exception
     def discard_changes(self):
         return self._dev._conn.discard_changes()
 
+    @jsonify
     @raise_eznc_exception
     def validate(self, source='candidate'):
         return self._dev._conn.validate(source=source)
 
+    @jsonify
     @raise_eznc_exception
     def delete_config(self, target):
         return self._dev._conn.delete_config(target)
 
+    @jsonify
     @raise_eznc_exception
     def copy_config(self, source, target):
         return self._dev._conn.copy_config(source, target)
