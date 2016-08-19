@@ -54,8 +54,8 @@ class _MetaPyangCtxOpts(object):
 
 class Namespaces(dict):
 
-    _NS_REGEX = '^(.*)\/(.*)\/([a-zA-Z0-9-_]*)$'
-    _CAPAB_REGEX = '^(.*)\/yang\/(.*)\?module=([a-zA-Z0-9-_]*)&(.*)$'
+    _NS_REGEX = r'^(.*)\/(.*)\/([a-zA-Z0-9-_]*)$'
+    _CAPAB_REGEX = r'^(.*)\/yang\/(.*)\?module=([a-zA-Z0-9-_]*)&(.*)$'
     # based on the capability format as per RFC 6020, paragraph 5.6.4
 
     def __init__(self, dev=None):

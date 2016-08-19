@@ -26,13 +26,11 @@ import socket
 # import third party libs
 from ncclient import manager as netconf_ssh
 from ncclient.transport.errors import AuthenticationError as NcAuthErr
-from ncclient.operations import RPCError
 
 # import local modules
 import iosxr_eznc.exception
 from iosxr_eznc.rpc import RPC
 from iosxr_eznc.namespaces import Namespaces
-from iosxr_eznc.decorators import raise_eznc_exception
 
 
 class Device(object):
@@ -51,7 +49,7 @@ class Device(object):
         # therefore platform / os checks are not enough
         # the user has to specify the hostname as 'localhost'
         # which makes the argument <hostname> mandatory
-        hostname = vargs[0] if len(vargs) else (kvargs.get('host') \
+        hostname = vargs[0] if len(vargs) else (kvargs.get('host')
                                                 or kvargs.get('hostname'))
 
         if not hostname:
@@ -67,11 +65,11 @@ class Device(object):
             ON_IOSXR = True
 
         # continue processing params
-        username = vargs[1] if len(vargs) > 1 else (kvargs.get('user') \
-                                                or kvargs.get('username'))
-        password = vargs[2] if len(vargs) > 2 else (kvargs.get('pass') \
-                                                or kvargs.get('password') \
-                                                or kvargs.get('passwd'))
+        username = vargs[1] if len(vargs) > 1 else (kvargs.get('user')
+                                                    or kvargs.get('username'))
+        password = vargs[2] if len(vargs) > 2 else (kvargs.get('pass')
+                                                    or kvargs.get('password')
+                                                    or kvargs.get('passwd'))
 
         self._timeout = kvargs.get('timeout')
 

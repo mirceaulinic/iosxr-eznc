@@ -24,9 +24,11 @@ import six
 
 
 class ConnectError(Exception):
+
     def __init__(self, dev=None, msg=None):
         self._dev = dev
         self._msg = msg
+
     def __repr__(self):
         if self._dev:
             if self._msg:
@@ -102,6 +104,7 @@ class ExecuteError(RPCError):
 class InvalidXMLReplyError(RPCError):
 
     pass
+
 
 class GetSchemaError(RPCError):
 

@@ -53,7 +53,7 @@ def raise_eznc_exception(fun):
 
     @wraps(fun)
     def _raise_eznc_exception(*vargs, **kvargs):
-        ### ~~~ vargs[0] is rpc obj ~~~
+        # ~~~ vargs[0] is rpc obj ~~~
         _rpc_obj = vargs[0]
         _dev_obj = _rpc_obj._dev
         try:
@@ -99,7 +99,7 @@ def qualify(param, oper=None):
                     xml_req_tree = etree.fromstring(xml_req_tree)
                 if xml_req_tree.get('xmlns') is None:
                     namespace = vargs[0]._dev._namespaces.get(xml_req_tree.tag, oper=oper)
-                    if not namespace is None:
+                    if namespace is not None:
                         # cannot register with namespace
                         # probably the request will fail...
                         xml_req_tree.set('xmlns', namespace)
