@@ -99,6 +99,10 @@ class ExecuteError(RPCError):
     pass
 
 
+class InvalidXMLReplyError(RPCError):
+
+    pass
+
 class GetSchemaError(RPCError):
 
     pass
