@@ -1,0 +1,17 @@
+language: python
+python:
+- 2.7
+install:
+- pip install pylint
+- pip install saltpylint
+- pip install pep8
+- pip install -r requirements.txt
+deploy:
+  provider: pypi
+  on:
+    tags: true
+    branch: master
+  password:
+    secure: AWavkgqZUr+/wPPNjBg3wEdx/1i38wxN2Lg7Loe82wyRT3DMQ/Z1KnCdfha3LgSu5Ldd0BHjIe/pHF40GM0YYZZzrtaF0fzIiG8y6fQmh8oZk7kpTCHKgvkRNJ/qOkzD+X5MGwnZCihtVhXVpTeQ1+z2Ak2LwEM7kMhbpr3pmTCruLx8hNYGq/GWsuq6anJOL0n9Kg0tlAcVd1e9y62tAyL4juN+GZpiw8Z0NbpeoNLmKTNgZaO2BFQhgUCvIQSa3daXpk2r8LIVe5eJntKFwUSEOep62bCUl4h221JFu9BjgCjHPmdTLljlmqejzut8BsTcYerX0g9JQbD/S/Na+IsLls+mWmx9uIdq0wAlQcWPMk6flw1vXdW+bAGk8givf0QfJwTzHvzF7CC63SSuAeJmwLRoWWHzZw5rNmmc+zC8tK7HTfKd0K/hPVYq9Kvv+98mActsmZyshBfBaBO19cyfR0RUpxzMh1xVKARHwaLIqJ2XTaXfOQE4Er2xfYmkjZRh0mic4YZOcJjl6IHu5qCP67aExWdyZqAQ2DMN+KsAE0E32a+9FLtq/OtEtntfx0morjs0O7TuCACYlza7393PjPqBTN9RLHaozVADm/kQ8JBXtYCJOygSmTa0NiDeiz5EjF8DK/9DEiIVfDdd+G6IUW7yU+w+Fv/udnsfQdI=
+script:
+- pylint --rcfile=.pylintrc iosxr_eznc/*.py
