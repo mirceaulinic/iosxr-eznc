@@ -44,6 +44,7 @@ class ConnectError(Exception):
                 )
         else:
             return self._msg
+
     __str__ = __repr__
 
 
@@ -97,6 +98,11 @@ class TimeoutExpiredError(RPCError):
 
 
 class ExecuteError(RPCError):
+
+    pass
+
+
+class InvalidXMLRequestError(RPCError):
 
     pass
 

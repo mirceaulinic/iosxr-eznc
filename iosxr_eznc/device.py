@@ -30,6 +30,7 @@ from ncclient.transport.errors import AuthenticationError as NcAuthErr
 # import local modules
 import iosxr_eznc.exception
 from iosxr_eznc.rpc import RPC
+from iosxr_eznc.facts import FACTS_FETCHERS
 from iosxr_eznc.namespaces import Namespaces
 
 
@@ -58,6 +59,8 @@ class Device(object):
         self._hostname = hostname
         self._port = kvargs.get('port', 830)
         self._preload_schemas = kvargs.get('preload_schemas', False)
+        self._gather_facts = kvargs.get('gather_facts', True)
+        self._facts = {}
 
         if hostname == 'localhost':
             # if the user specifies the host as 'localhost'
@@ -116,7 +119,18 @@ class Device(object):
         self.rpc = RPC(self)
         self._namespaces = Namespaces(self)
 
+        if self._gather_facts:
+            if self._preload_schemas:
+                while not self._namespaces.fetched():
+                    pass  # wait here till done retrieving delta namespaces
+            self._get_facts()
+
         return self
+
+    def _get_facts(self):
+
+        for fetcher in FACTS_FETCHERS:
+            fetcher(self, self._facts)
 
     def close(self):
 
@@ -170,3 +184,11 @@ class Device(object):
     @namespaces.setter
     def namespaces(self, vals):
         self._namespaces.register(vals)
+
+    @property
+    def facts(self):
+        return self._facts
+
+    @facts.setter
+    def facts(self, val):
+        return

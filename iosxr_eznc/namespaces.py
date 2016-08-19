@@ -62,6 +62,7 @@ class Namespaces(dict):
 
         self._dev = dev
         self._namespaces = {}
+        self._fetched_namespaces = True
         if self._dev is not None:
             # load default namespaces as of IOS-XR 6.0.1
             self._load_default_namespaces()
@@ -72,10 +73,12 @@ class Namespaces(dict):
             if self._dev._preload_schemas:
                 # in case of custom modules
                 # and if the pre-fetching is
+                self._fetched_namespaces = False
                 device_schemas = map(self._get_schema_capab, self._capabilities)
                 default_schemas = map(self._get_schema_ns, self._namespaces.keys())
                 custom_schemas = list(set(device_schemas) - set(default_schemas))
                 self._fetch(custom_schemas)
+                self._fetched_namespaces = True
 
     def _load_default_namespaces(self):
 
@@ -207,6 +210,10 @@ class Namespaces(dict):
         elif len(_nss) == 1:
             return _nss[0]
         return
+
+    @property
+    def fetched(self):
+        return self._fetched_namespaces
 
     def __getitem__(self, containter):
 

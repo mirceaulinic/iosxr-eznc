@@ -59,19 +59,22 @@ class RPC(_RPCBase):
 
     @jsonify
     @raise_eznc_exception
-    @qualify('filter_xml', True)
-    @wrap_xml('filter_xml')
-    def get(self, filter_xml=None):
-        return self._dev._conn.get(filter=filter_xml)
+    @qualify('filter', True)
+    @wrap_xml('filter')
+    def _get(self, filter=None):
+        return self._dev._conn.get(filter=filter)
+
+    def get(self, filter):
+        return self._get(filter=filter)
 
     @jsonify
     @raise_eznc_exception
-    @qualify('filter_xml', False)
-    @wrap_xml('filter_xml')
-    def get_configuration(self, filter_xml=None, source=None):
+    @qualify('filter', False)
+    @wrap_xml('filter')
+    def get_configuration(self, filter=None, source=None):
         if not source:
             source = 'running'
-        return self._dev._conn.get_config(filter=filter_xml, source=source)
+        return self._dev._conn.get_config(filter=filter, source=source)
 
     @jsonify
     @raise_eznc_exception
