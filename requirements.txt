@@ -3,3 +3,4 @@ lxml>=3.2.4
 pyang
 pyYAML
 jxmlease
+objectpath

@@ -17,7 +17,6 @@
 Useful decorators.
 """
 
-
 from __future__ import absolute_import
 
 # import stdlib
@@ -37,12 +36,66 @@ from ncclient.operations.errors import TimeoutExpiredError as NcTEError
 from iosxr_eznc.exception import RPCTimeoutError
 from iosxr_eznc.exception import InvalidXMLReplyError
 from iosxr_eznc.exception import ConnectionClosedError
+from iosxr_eznc.exception import InvalidXMLRequestError
 from iosxr_eznc.exception import RPCError as _XRRPCError
+
+
+def _build_xml(xml_str):
+
+    """
+    Dynamically build an XML using reverse XPath.
+
+    E.g.:
+    >>> _build_xml('a/b/c')
+    >>> '<a><b><c/></b></a>'
+    """
+
+    xml_tree = None
+    # TODO: enhance this to allow also gRPC-type requests.
+    xml_str_tags = xml_str.split('/')
+    xml_tree = etree.Element(xml_str_tags[0])
+
+    prev_subelem = xml_tree
+    for subelem_tag in xml_str_tags[1:]:  # if any
+        prev_subelem = etree.SubElement(prev_subelem, subelem_tag)
+
+    return xml_tree
+
+
+def _xml_obj_from_str(xml_str, dev):
+
+    xml_req_tree = None
+
+    try:
+        xml_req_tree = etree.fromstring(xml_str)
+    except etree.XMLSyntaxError:
+        xml_req_tree = _build_xml(xml_str)
+
+    if not etree.iselement(xml_req_tree):
+        # still not XML obj, but should
+        raise InvalidXMLRequestError(
+            dev,
+            err='Invalid request "{req}"'.format(
+                req=xml_str
+            )
+        )
+
+    return xml_req_tree
 
 
 def raise_eznc_exception(fun):
 
+    """
+    Raises iosxr-eznc exception.
+    Depending on the RPC method called, will try to raise the most appropriate exception.
+    If unable to find a proper exception class, will raise the default RPCError.
+    """
+
     def _get_rpc_error_class(exc):
+
+        """
+        Search for the exception class using the function name.
+        """
 
         mod = __import__('iosxr_eznc.exception')
         for obj in inspect.getmembers(mod.exception):
@@ -89,6 +142,16 @@ def raise_eznc_exception(fun):
 
 def qualify(param, oper=None):
 
+    """
+    Apply the necessary namespace to the request.
+    Request can be either:
+        * valid XML
+        * valid XPath-like selector (e.g.: container/tree/selector), respecting the structure tree of the YANG model
+            e.g.:
+            https://github.com/YangModels/yang/blob/master/vendor/cisco/xr/601/Cisco-IOS-XR-plat-chas-invmgr-oper.yang
+            if the user needs only the `racks` data from the model above, can request using 'platform-inventory/racks'
+    """
+
     def _qualify_wrapper(fun):
 
         @wraps(fun)
@@ -96,7 +159,7 @@ def qualify(param, oper=None):
             if param in kvargs.keys():
                 xml_req_tree = kvargs[param]
                 if isinstance(xml_req_tree, basestring):
-                    xml_req_tree = etree.fromstring(xml_req_tree)
+                    xml_req_tree = _xml_obj_from_str(xml_req_tree, vargs[0]._dev)
                 if xml_req_tree.get('xmlns') is None:
                     namespace = vargs[0]._dev._namespaces.get(xml_req_tree.tag, oper=oper)
                     if namespace is not None:
@@ -114,6 +177,10 @@ def qualify(param, oper=None):
 
 def wrap_xml(param, tag='filter'):
 
+    """
+    Wraps the filter XML specified in `param` into the `tag` if not already there.
+    """
+
     def _wrap_xml_wrapper(fun):
 
         @wraps(fun)
@@ -121,7 +188,7 @@ def wrap_xml(param, tag='filter'):
             if param in kvargs.keys():
                 xml_req_tree = kvargs[param]
                 if isinstance(xml_req_tree, basestring):
-                    xml_req_tree = etree.fromstring(xml_req_tree)
+                    xml_req_tree = _xml_obj_from_str(xml_req_tree, vargs[0]._dev)
                 if xml_req_tree.tag != tag:
                     tag_elem = etree.Element(tag)
                     tag_elem.append(xml_req_tree)
@@ -135,6 +202,10 @@ def wrap_xml(param, tag='filter'):
 
 
 def jsonify(fun):
+
+    """
+    Transforms the XML reply into a JSON.
+    """
 
     def _jsonify(*vargs, **kvargs):
         ret = fun(*vargs, **kvargs)
