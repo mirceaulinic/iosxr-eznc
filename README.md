@@ -22,7 +22,7 @@ YANG models are supported exclusively through version 1.1 of NETCONF, therefore 
 pip install iosxr-eznc
 ````
 
-## USGAE
+## USAGE
 
 Firstly make sure that netconf-yang is enabled on the device:
 
