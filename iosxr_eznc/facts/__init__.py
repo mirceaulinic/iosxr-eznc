@@ -17,10 +17,76 @@
 Build device facts dictionary.
 """
 
+# import stdlib
+import sys
+import inspect
+
+# import local modules
+# ~~~ exceptions ~~~
+from iosxr_eznc.exception import FactsFetchError
+# ~~~ facts fetchers ~~~
 from iosxr_eznc.facts.platform import platform_facts
 
-FACTS_FETCHERS = [
-    platform_facts
-]
 
-__all__ = ['FACTS']
+class Facts(dict):
+
+    """
+    Builds facts dictionary.
+    """
+
+    def __init__(self, dev, fetch=True):
+
+        dict.__init__(self)
+
+        self._dev = dev
+        self._attach()
+        if fetch:
+            self.refresh()
+
+    def _attach(self):
+
+        """
+        Attach facts fetchers to this object.
+        """
+
+        exclude = [
+        ]  # in case will need to exclude anything
+
+        self._fetchers = [
+            fun_obj for (fun_name, fun_obj) in inspect.getmembers(sys.modules[__name__])
+                if inspect.isfunction(fun_obj) and
+                not fun_name.startswith('_') and
+                fun_name not in exclude
+        ]
+
+        __attach = lambda fun: self.__setattr__(fun.__name__, fun)
+
+        map(__attach, self._fetchers)
+
+        self._fetch_funs = map(lambda fun: fun.__name__, self._fetchers)
+
+
+    def refresh(self, fun=None):
+
+        """
+        Refresh facts.
+
+        :param fun: Specify the function that refreshes the facts.
+        """
+
+        _funs = self._fetchers
+
+        if fun:
+            _funs = [fetcher for fetcher in self._fetchers if fetcher.__name__ == fun]
+            if not _funs:
+                raise FactsFetchError(
+                    self._dev,
+                    {
+                        'fetcher': fun,
+                        'msg': 'Invalid function name'
+                    }
+                )
+
+        __collect = lambda fun: fun(self._dev, self)
+
+        map(__collect, self._fetchers)

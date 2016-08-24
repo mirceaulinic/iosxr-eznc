@@ -20,6 +20,7 @@ Useful decorators.
 from __future__ import absolute_import
 
 # import stdlib
+import re
 import json
 import inspect
 from functools import wraps
@@ -27,6 +28,7 @@ from functools import wraps
 # import third party
 import jxmlease
 from lxml import etree
+from ncclient.operations.rpc import RPCReply
 from ncclient.operations.retrieve import GetReply
 from ncclient.operations.rpc import RPCError as NcRPCError
 from ncclient.transport.errors import TransportError as NcTpError
@@ -36,30 +38,102 @@ from ncclient.operations.errors import TimeoutExpiredError as NcTEError
 from iosxr_eznc.exception import RPCTimeoutError
 from iosxr_eznc.exception import InvalidXMLReplyError
 from iosxr_eznc.exception import ConnectionClosedError
-from iosxr_eznc.exception import InvalidXMLRequestError
+from iosxr_eznc.exception import InvalidRequestError
 from iosxr_eznc.exception import RPCError as _XRRPCError
 
 
-def _build_xml(xml_str):
+OPENCONFIG_NAMESPACE = 'http://openconfig.net/yang/'
+BASE_IOSXR_NAMESPACE = 'http://cisco.com/ns/yang/'
+
+
+def _build_xml(xpath, dev):
 
     """
     Dynamically build an XML using reverse XPath.
 
     E.g.:
-    >>> _build_xml('a/b/c')
-    >>> '<a><b><c/></b></a>'
+    >>> _build_xml('a/b[dummy="dummy" and name="second"]/c')
+    >>> '<a><b dummy="dummy" name="second"><c/></b></a>'
     """
 
     xml_tree = None
-    # TODO: enhance this to allow also gRPC-type requests.
-    xml_str_tags = xml_str.split('/')
-    xml_tree = etree.Element(xml_str_tags[0])
 
-    prev_subelem = xml_tree
+    yang_parts = xpath.split(':')
+    if len(yang_parts) == 1:
+        yang_module = None
+        yang_containers = yang_parts[0]
+    elif len(yang_parts) == 2:
+        yang_module = yang_parts[0]
+        yang_containers = yang_parts[1]
+    else:
+        raise InvalidRequestError(
+            dev,
+            {
+                'obj': xpath,
+                'msg': 'Invalid expression'
+            }
+        )
+
+    xml_str_tags = yang_containers.split('/')
+    xml_tree = _ele(xml_str_tags[0], dev)
+    prev_ele = xml_tree
+
+    if yang_module:
+        xml_tree.set('xmlns', _nsmap(yang_module))
+
     for subelem_tag in xml_str_tags[1:]:  # if any
-        prev_subelem = etree.SubElement(prev_subelem, subelem_tag)
+        ele = _ele(subelem_tag, dev)
+        prev_ele.append(ele)
+        prev_ele = ele
 
     return xml_tree
+
+
+def _ele(xpath_tag, dev):
+
+    xpath_tag_rgx = r'^([^\[]*)(\[(.*)\])?$'
+    attr_rgx = r'''^@([^=]*)\s?=\s?('|")?([^'][^"]*)('|")?$'''
+
+    res = re.search(xpath_tag_rgx, xpath_tag)
+    if not res or len(res.groups()) != 3:
+        raise InvalidRequestError(
+            dev,
+            {
+                'obj': xpath_tag,
+                'msg': 'Invalid expression'
+            }
+        )
+    tag_name, _, attrs = res.groups()
+    tag = etree.Element(tag_name)
+    attrs_list = []
+    if attrs:
+        attrs_list = attrs.split('and')
+    for attr in attrs_list:
+        attr = attr.strip()
+        res = re.search(attr_rgx, attr)
+        if not res or len(res.groups()) != 4:
+            return InvalidRequestError(
+                dev,
+                {
+                    'obj': attr,
+                    'msg': 'Invalid expression'
+                }
+            )
+        attr_name, _, attr_val, _ = res.groups()
+        if attr_name in ['xmlns', 'ns', 'nsmap', 'yang']:
+            attr_name = 'xmlns'
+            attr_val = _nsmap(attr_val)
+        tag.set(attr_name.strip(), attr_val)
+    return tag
+
+
+def _nsmap(yang_module):
+
+    # to be revisited, enhanced and cross-vendor compatible maybe?
+
+    if yang_module.startswith('oc-'):
+        return OPENCONFIG_NAMESPACE + yang_module.replace('oc-', '')
+    return BASE_IOSXR_NAMESPACE + yang_module
 
 
 def _xml_obj_from_str(xml_str, dev):
@@ -69,11 +143,11 @@ def _xml_obj_from_str(xml_str, dev):
     try:
         xml_req_tree = etree.fromstring(xml_str)
     except etree.XMLSyntaxError:
-        xml_req_tree = _build_xml(xml_str)
+        xml_req_tree = _build_xml(xml_str, dev)
 
     if not etree.iselement(xml_req_tree):
         # still not XML obj, but should
-        raise InvalidXMLRequestError(
+        raise InvalidRequestError(
             dev,
             err='Invalid request "{req}"'.format(
                 req=xml_str
@@ -100,9 +174,9 @@ def raise_eznc_exception(fun):
         mod = __import__('iosxr_eznc.exception')
         for obj in inspect.getmembers(mod.exception):
             # digging into exceptions' module
-            if obj[0] == exc and inspect.isclass(obj):
+            if obj[0] == exc and inspect.isclass(obj[1]):
                 # found ya
-                return obj
+                return obj[1]
 
     @wraps(fun)
     def _raise_eznc_exception(*vargs, **kvargs):
@@ -130,7 +204,7 @@ def raise_eznc_exception(fun):
             raise XRRPCError(_dev_obj, err)
         except NcTEError as nc_err:
             err = {
-                'fun': fun.__name__,
+                'fun': 'rpc.{}'.format(fun.__name__),
                 'timeout': _dev_obj.timeout
             }
             raise RPCTimeoutError(_dev_obj, err)
@@ -208,12 +282,28 @@ def jsonify(fun):
     """
 
     def _jsonify(*vargs, **kvargs):
+
         ret = fun(*vargs, **kvargs)
+        ret_xml = None
+
         if isinstance(ret, GetReply):
             ret_xml = ret.data_xml
+        elif isinstance(ret, RPCReply):
+            ret_xml = str(ret)
+
+        if ret_xml:
             ret_json = json.loads(json.dumps(jxmlease.parse(ret_xml)))
             return ret_json
         else:
-            raise InvalidXMLReplyError(err='Cannot process reply from device')
+            reply_obj = None
+            if etree.iselement(ret):
+                reply_obj = etree.tostring(ret)[:1024]  # up to 1024 chars
+            else:
+                reply_obj = str(ret)  # trying this
+            err = {
+                'msg': 'Invalid XML reply',
+                'obj': reply_obj
+            }
+            raise InvalidXMLReplyError(vargs[0]._dev, err)
 
     return _jsonify

@@ -57,20 +57,29 @@ class RPCError(Exception):
     def __repr__(self):
         _err_parts = []
         if self._err:
-            for detail, value in six.iteritems(self._err):
-                if detail == 'info':
-                    continue
-                if value:
-                    _err_parts.append('{detail}: {value}'.format(
-                            detail=detail,
-                            value=value
+            if isinstance(self._err, dict):
+                for detail, value in six.iteritems(self._err):
+                    if detail == 'info':
+                        continue
+                    if value:
+                        _err_parts.append('{detail}: {value}'.format(
+                                detail=detail,
+                                value=value
+                            )
                         )
+            else:
+                _err_parts.append('err: {msg}'.format(
+                        msg=str(self._err)
                     )
+                )
 
-        return '{dev} ({errors})'.format(
-            dev=self._dev.hostname,
-            errors=', '.join(_err_parts)
-        )
+        if self._dev:
+            return '{dev} ({errors})'.format(
+                dev=self._dev.hostname,
+                errors=', '.join(_err_parts)
+            )
+        else:
+            return ', '.join(_err_parts)
 
     __str__ = __repr__
 
@@ -97,14 +106,21 @@ class TimeoutExpiredError(RPCError):
     pass
 
 
+class FactsFetchError(RPCError):
+
+    pass
+
+
 class ExecuteError(RPCError):
 
-    pass
+    def __init__(self, dev):
+        RPCError.__init__(self, dev, 'Execution error.')
 
 
-class InvalidXMLRequestError(RPCError):
+class InvalidRequestError(RPCError):
 
-    pass
+    def __init__(self, dev=None, err='Imvalid request'):
+        RPCError.__init__(self, dev, err)
 
 
 class InvalidXMLReplyError(RPCError):

@@ -20,29 +20,23 @@ Retrieves platform specific facts.
 import objectpath
 
 
-def _dict_to_list(obj):
-
-    return [obj]
+# all the following helpers will be moved in iosxr-base:
 
 
-def _jsonpath(path):
+def _jsonpath(obj, path, dtype=dict):
 
     opath = '$.'
     path_nodes = path.split('/')
     opath += '.'.join(map(lambda ele: "'{}'".format(ele), path_nodes))
-    return opath
+    return _extract(obj, opath, dtype=dtype)
 
 
 def _extract(obj, path, dtype=dict):
-
     tree = objectpath.Tree(obj)
-    opath = _jsonpath(path)
-    res = tree.execute(opath)
-
+    res = tree.execute(path)
     if not isinstance(res, dtype):
         if dtype is list:
             res = [res]
-
     return res
 
 
@@ -52,12 +46,27 @@ def platform_facts(device, facts):
     In the `facts` dictionary will set the following keys:
         * facts['model']: device model
         * facts['serial']: serial number
-        * facts['racks']: list of racks
+        * facts['slots']: list of slots
+        * facts['uptime']: uptime in seconds
+        * facts['version']: OS version
     """
 
     platform_json = device.rpc.get('platform-inventory')  # retrieve platform-inventory
-    rack_tree = _extract(platform_json, 'data/platform-inventory/racks/rack')
-    chassis_attributes = _extract(rack_tree, 'attributes/basic-info')
+    rack_tree = _jsonpath(platform_json, 'data/platform-inventory/racks/rack')
+    chassis_attributes = _jsonpath(rack_tree, 'attributes/basic-info')
 
-    facts['model'] = _extract(chassis_attributes, 'model-name')
-    facts['serial'] = _extract(chassis_attributes, 'serial-number')
+    facts['model'] = _jsonpath(chassis_attributes, 'model-name')
+    facts['serial'] = _jsonpath(chassis_attributes, 'serial-number')
+    facts['serial'] = _jsonpath(chassis_attributes, 'software-revision')
+    facts['description'] = _jsonpath(chassis_attributes, 'description')
+
+    slot_tree = _jsonpath(rack_tree, 'slots/slot')
+
+    facts['slots'] = [
+        slot.get('name') for slot in slot_tree if slot.get('name') != '0'
+    ]
+
+    facts['uptime'] = _extract(
+        slot_tree,
+        "$.*[@.name is '0'].cards.card.attributes.'fru-info'.'module-up-time'.'time-in-seconds'"
+    ).next()

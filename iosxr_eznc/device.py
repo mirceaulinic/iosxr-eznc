@@ -30,7 +30,7 @@ from ncclient.transport.errors import AuthenticationError as NcAuthErr
 # import local modules
 import iosxr_eznc.exception
 from iosxr_eznc.rpc import RPC
-from iosxr_eznc.facts import FACTS_FETCHERS
+from iosxr_eznc.facts import Facts
 from iosxr_eznc.namespaces import Namespaces
 
 
@@ -119,18 +119,17 @@ class Device(object):
         self.rpc = RPC(self)
         self._namespaces = Namespaces(self)
 
-        if self._gather_facts:
-            if self._preload_schemas:
-                while not self._namespaces.fetched():
-                    pass  # wait here till done retrieving delta namespaces
-            self._get_facts()
+        if self._preload_schemas:
+            while not self._namespaces.fetched():
+                pass  # wait here till done retrieving delta namespaces
+
+        self._facts = Facts(self, fetch=self._gather_facts)  # fetch facts
 
         return self
 
-    def _get_facts(self):
+    def refresh_facts(self):
 
-        for fetcher in FACTS_FETCHERS:
-            fetcher(self, self._facts)
+        self._facts.refresh()
 
     def close(self):
 
