@@ -27,6 +27,7 @@ from functools import wraps
 # import third party
 import jxmlease
 from lxml import etree
+from ncclient.operations.rpc import RPCReply
 from ncclient.operations.retrieve import GetReply
 from ncclient.operations.rpc import RPCError as NcRPCError
 from ncclient.transport.errors import TransportError as NcTpError
@@ -100,9 +101,9 @@ def raise_eznc_exception(fun):
         mod = __import__('iosxr_eznc.exception')
         for obj in inspect.getmembers(mod.exception):
             # digging into exceptions' module
-            if obj[0] == exc and inspect.isclass(obj):
+            if obj[0] == exc and inspect.isclass(obj[1]):
                 # found ya
-                return obj
+                return obj[1]
 
     @wraps(fun)
     def _raise_eznc_exception(*vargs, **kvargs):
@@ -130,7 +131,7 @@ def raise_eznc_exception(fun):
             raise XRRPCError(_dev_obj, err)
         except NcTEError as nc_err:
             err = {
-                'fun': fun.__name__,
+                'fun': 'rpc.{}'.format(fun.__name__),
                 'timeout': _dev_obj.timeout
             }
             raise RPCTimeoutError(_dev_obj, err)
@@ -208,12 +209,28 @@ def jsonify(fun):
     """
 
     def _jsonify(*vargs, **kvargs):
+
         ret = fun(*vargs, **kvargs)
+        ret_xml = None
+
         if isinstance(ret, GetReply):
             ret_xml = ret.data_xml
+        elif isinstance(ret, RPCReply):
+            ret_xml = str(ret)
+
+        if ret_xml:
             ret_json = json.loads(json.dumps(jxmlease.parse(ret_xml)))
             return ret_json
         else:
-            raise InvalidXMLReplyError(err='Cannot process reply from device')
+            reply_obj = None
+            if etree.iselement(ret):
+                reply_obj = etree.tostring(ret)[:1024]  # up to 1024 chars
+            else:
+                reply_obj = str(ret)  # trying this
+            err = {
+                'msg': 'Invalid XML reply',
+                'obj': reply_obj
+            }
+            raise InvalidXMLReplyError(vargs[0]._dev, err)
 
     return _jsonify

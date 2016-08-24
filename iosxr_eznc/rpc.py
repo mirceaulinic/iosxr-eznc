@@ -76,6 +76,9 @@ class RPC(_RPCBase):
             source = 'running'
         return self._dev._conn.get_config(filter=filter, source=source)
 
+    def get_config(self, filter=None, source=None):
+        return self.get_configuration(filter=filter, source=source)
+
     @jsonify
     @raise_eznc_exception
     def lock(self, target='candidate'):

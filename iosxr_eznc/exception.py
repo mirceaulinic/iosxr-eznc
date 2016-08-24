@@ -57,15 +57,21 @@ class RPCError(Exception):
     def __repr__(self):
         _err_parts = []
         if self._err:
-            for detail, value in six.iteritems(self._err):
-                if detail == 'info':
-                    continue
-                if value:
-                    _err_parts.append('{detail}: {value}'.format(
-                            detail=detail,
-                            value=value
+            if isinstance(self._err, dict):
+                for detail, value in six.iteritems(self._err):
+                    if detail == 'info':
+                        continue
+                    if value:
+                        _err_parts.append('{detail}: {value}'.format(
+                                detail=detail,
+                                value=value
+                            )
                         )
+            else:
+                _err_parts.append('err: {msg}'.format(
+                        msg=str(self._err)
                     )
+                )
 
         return '{dev} ({errors})'.format(
             dev=self._dev.hostname,
