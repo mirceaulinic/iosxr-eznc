@@ -106,6 +106,11 @@ class TimeoutExpiredError(RPCError):
     pass
 
 
+class FactsFetchError(RPCError):
+
+    pass
+
+
 class ExecuteError(RPCError):
 
     def __init__(self, dev):
