@@ -73,10 +73,13 @@ class RPCError(Exception):
                     )
                 )
 
-        return '{dev} ({errors})'.format(
-            dev=self._dev.hostname,
-            errors=', '.join(_err_parts)
-        )
+        if self._dev:
+            return '{dev} ({errors})'.format(
+                dev=self._dev.hostname,
+                errors=', '.join(_err_parts)
+            )
+        else:
+            return ', '.join(_err_parts)
 
     __str__ = __repr__
 
@@ -105,12 +108,14 @@ class TimeoutExpiredError(RPCError):
 
 class ExecuteError(RPCError):
 
-    pass
+    def __init__(self, dev):
+        RPCError.__init__(self, dev, 'Execution error.')
 
 
-class InvalidXMLRequestError(RPCError):
+class InvalidRequestError(RPCError):
 
-    pass
+    def __init__(self, dev=None, err='Imvalid request'):
+        RPCError.__init__(self, dev, err)
 
 
 class InvalidXMLReplyError(RPCError):
