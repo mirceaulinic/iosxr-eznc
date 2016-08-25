@@ -21,7 +21,7 @@ install_reqs = parse_requirements('requirements.txt', session=uuid.uuid1())
 
 reqs = [str(ir.req) for ir in install_reqs]
 
-__version__ = '2016.8.19'
+__version__ = '2016.8.25'
 
 setup(
     name = 'iosxr-eznc',
