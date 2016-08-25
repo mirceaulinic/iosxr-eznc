@@ -40,7 +40,7 @@ pprint(dev.facts)
 {'description': u'ASR 9904 2 Line Card Slot Chassis with V2 AC PEM',
  'domain': u'cloudflair.net',
  'fqdn': 'edge01.bjm01.cloudflair.net',
- 'hostname': u'edge01.mrs01',
+ 'hostname': u'edge01.bjm01',
  'model': u'ASR-9904-AC',
  'os_version': u'6.0.1',
  'personality': 'ASR',
