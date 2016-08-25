@@ -37,6 +37,17 @@ from iosxr_eznc import Device
 dev = Device(host='edge01.bjm01', user='netconf', password='!Love105-XR')
 dev.open()
 pprint(dev.facts)
+{'description': u'ASR 9904 2 Line Card Slot Chassis with V2 AC PEM',
+ 'domain': u'cloudflair.net',
+ 'fqdn': 'edge01.bjm01.cloudflair.net',
+ 'hostname': u'edge01.mrs01',
+ 'model': u'ASR-9904-AC',
+ 'os_version': u'6.0.1',
+ 'personality': 'ASR',
+ 'serial': u'FOX19W00F01',
+ 'slots': [u'RSP0', u'RSP1'],
+ 'uptime': 1471641.873581,
+ 'virtual': False}
 dev.close()
 ````
 
