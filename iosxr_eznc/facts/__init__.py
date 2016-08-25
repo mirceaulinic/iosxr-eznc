@@ -25,7 +25,8 @@ import inspect
 # ~~~ exceptions ~~~
 from iosxr_eznc.exception import FactsFetchError
 # ~~~ facts fetchers ~~~
-from iosxr_eznc.facts.platform import platform_facts
+from iosxr_eznc.facts.shell import shellutil
+from iosxr_eznc.facts.platform import platform
 
 
 class Facts(dict):
@@ -58,6 +59,7 @@ class Facts(dict):
                 not fun_name.startswith('_') and
                 fun_name not in exclude
         ]
+        self._fetchers.reverse()
 
         __attach = lambda fun: self.__setattr__(fun.__name__, fun)
 
@@ -77,7 +79,7 @@ class Facts(dict):
         _funs = self._fetchers
 
         if fun:
-            _funs = [fetcher for fetcher in self._fetchers if fetcher.__name__ == fun]
+            _funs = [fetcher for fetcher in self._fetch_funs if fetcher == fun]
             if not _funs:
                 raise FactsFetchError(
                     self._dev,

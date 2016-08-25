@@ -17,7 +17,10 @@
 Retrieves platform specific facts.
 """
 
+import time
 import objectpath
+
+from iosxr_eznc.facts.personality import personality
 
 
 # all the following helpers will be moved in iosxr-base:
@@ -40,7 +43,7 @@ def _extract(obj, path, dtype=dict):
     return res
 
 
-def platform_facts(device, facts):
+def platform(device, facts):
 
     """
     In the `facts` dictionary will set the following keys:
@@ -51,22 +54,37 @@ def platform_facts(device, facts):
         * facts['version']: OS version
     """
 
-    platform_json = device.rpc.get('platform-inventory')  # retrieve platform-inventory
+    platform_json = device.rpc.get('Cisco-IOS-XR-plat-chas-invmgr-oper:platform-inventory')
     rack_tree = _jsonpath(platform_json, 'data/platform-inventory/racks/rack')
     chassis_attributes = _jsonpath(rack_tree, 'attributes/basic-info')
 
     facts['model'] = _jsonpath(chassis_attributes, 'model-name')
     facts['serial'] = _jsonpath(chassis_attributes, 'serial-number')
-    facts['serial'] = _jsonpath(chassis_attributes, 'software-revision')
+    facts['os_version'] = _jsonpath(chassis_attributes, 'software-revision')
     facts['description'] = _jsonpath(chassis_attributes, 'description')
 
-    slot_tree = _jsonpath(rack_tree, 'slots/slot')
+    personality(device, facts)
+
+    slot_tree = _jsonpath(rack_tree, 'slots/slot', list)
+
+    main_slot = '0'
+    if facts['personality'] == 'XRv':
+        main_slot = '16'
 
     facts['slots'] = [
-        slot.get('name') for slot in slot_tree if slot.get('name') != '0'
+        slot.get('name') for slot in slot_tree if slot.get('name') != main_slot
     ]
 
-    facts['uptime'] = _extract(
-        slot_tree,
-        "$.*[@.name is '0'].cards.card.attributes.'fru-info'.'module-up-time'.'time-in-seconds'"
-    ).next()
+    uptime_generator = list(
+        _extract(
+            slot_tree,
+            "$.*[@.name is '{main_slot}'].cards.card.attributes.'fru-info'.'module-up-time'.'time-in-seconds'".format(
+                main_slot=main_slot
+            )
+        )
+    )
+
+    if uptime_generator:
+        facts['uptime'] = time.time() - float(uptime_generator[0])
+    else:
+        facts['uptime'] = 0.0
